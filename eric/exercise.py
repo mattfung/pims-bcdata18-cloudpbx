@@ -54,17 +54,10 @@ df_dens = df.dropna(axis=0, thresh = 79)
 # frames = [f1,f2,f3,f4,f5,f6]
 # results = pd.concat(frames)
 
-# print(df['connect_duration'])
-
-
 bins = [-1, 1, 30, 35, 40, 45]
-f1 = df[df['connect_duration'] > 0 ]
-'''
-We do > 0 because of the possibility of hackers just hanging up at 0:00:00 
-time of the call. Having != 0 just dirties out data because it adds
-the hacker data
-'''
-
+filter_durations = ['duration', 'duration_td','connect_duration',]
+df.dropna(subset=filter_durations)
+f1 = df
 f1['a_mos_adapt_mult10'] = f1['a_mos_adapt_mult10'].fillna(0)
 f1['b_mos_adapt_mult10'] = f1['b_mos_adapt_mult10'].fillna(0)
 f1['a_mos_f1_mult10'] = f1['a_mos_f1_mult10'].fillna(0)

@@ -54,17 +54,16 @@ df_dens = df.dropna(axis=0, thresh = 79)
 
 bins = [-1, 1, 30, 35, 40, 45]
 # df.dropna(subset=['a_saddr', 'b_saddr'])
-f1 = df['connect_duration']
-f1 = df[f1 >0]
-f1 = df['a_saddr']
-f1 = df[f1 >0]
-f1 = df['b_saddr']
-f1 = df[f1 >0]
+df = df[ df.connect_duration > 0 ]
+df = df[ df.a_saddr > 0 ] 
+df = df[ df.b_saddr > 0 ]
 '''
 We do > 0 because of the possibility of hackers just hanging up at 0:00:00 
 time of the call. Having != 0 just dirties out data because it adds
 the hacker data
 '''
+
+f1 =df
 
 f1['a_mos_adapt_mult10'].fillna(0)
 f1['b_mos_adapt_mult10'].fillna(0)
@@ -73,16 +72,4 @@ f1['a_mos_f2_mult10'].fillna(0)
 f1['b_mos_f1_mult10'].fillna(0)
 f1['b_mos_f2_mult10'].fillna(0)
 
-
-f1['binned0'] = pd.cut(f1.a_mos_f1_mult10, bins)
-f1['binned1'] = pd.cut(f1.a_mos_f2_mult10, bins)
-f1['binned2'] = pd.cut(f1.b_mos_f1_mult10, bins)
-f1['binned3'] = pd.cut(f1.b_mos_f2_mult10, bins)
-f1['binned4'] = pd.cut(f1.a_mos_adapt_mult10, bins)
-f1['binned5'] = pd.cut(f1.b_mos_adapt_mult10, bins)
-
-# print(f1['binned0'], f1['binned1'],f1['binned2'],f1['binned3'],f1['binned4'],f1['binned5'])
-print(f1)
-
-# plt.plot(f1['a_mos_f1_mult10'],df['a_mos_f1_mult10'])
-plt.show()
+print(f1.head(50))
