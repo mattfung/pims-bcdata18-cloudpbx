@@ -72,4 +72,4 @@ f1['a_mos_f2_mult10'].fillna(0)
 f1['b_mos_f1_mult10'].fillna(0)
 f1['b_mos_f2_mult10'].fillna(0)
 
-print(f1.head(50))
+print(f1)
