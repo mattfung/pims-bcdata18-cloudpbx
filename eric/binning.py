@@ -1,12 +1,14 @@
 import numpy as np
 import pandas as pd
 import os
+# import dask.dataframe as dd
 import matplotlib.pyplot as plt
 # import geoip2.database
 
 DATA_ROOT = '../data'
+CSV_FILE_NAME = 'locn-filtered' + '.csv'
 CSV_FILE_PATH = os.path.join(DATA_ROOT,'/home/eric/Documents/ubc_workshop/pims-bcdata18-cloudpbx/data/' +
-		'127.0.0.1-2018-05-2018-3-58 PM- voipmonitor-cdr.csv')
+		CSV_FILE_NAME)
 GEOLITE_DB_PATH = os.path.join(DATA_ROOT,'GeoLite2-City.mmdb')
 
 DESCRIBED_COLUMNS = ["calldate", "callend", "duration", "connect_duration", "progress_time", 
@@ -52,7 +54,7 @@ df_dens = df.dropna(axis=0, thresh = 79)
 # print(df['connect_duration'])
 
 
-bins = [-1, 1, 30, 35, 40, 45]
+bins = [0, 30, 35, 40, 45]
 # df.dropna(subset=['a_saddr', 'b_saddr'])
 df = df[ df.connect_duration > 0 ]
 df = df[ df.a_saddr > 0 ] 
@@ -63,24 +65,52 @@ time of the call. Having != 0 just dirties out data because it adds
 the hacker data
 '''
 
-f1 =df
+df['a_mos_adapt_mult10'].fillna(0)
+df['b_mos_adapt_mult10'].fillna(0)
+df['a_mos_f1_mult10'].fillna(0)
+df['a_mos_f2_mult10'].fillna(0)
+df['b_mos_f1_mult10'].fillna(0)
+df['b_mos_f2_mult10'].fillna(0)
 
-f1['a_mos_adapt_mult10'].fillna(0)
-f1['b_mos_adapt_mult10'].fillna(0)
-f1['a_mos_f1_mult10'].fillna(0)
-f1['a_mos_f2_mult10'].fillna(0)
-f1['b_mos_f1_mult10'].fillna(0)
-f1['b_mos_f2_mult10'].fillna(0)
+df['binned0'] = pd.cut(df.a_mos_f1_mult10, bins)
+df['binned1'] = pd.cut(df.a_mos_f2_mult10, bins)
+df['binned2'] = pd.cut(df.b_mos_f1_mult10, bins)
+df['binned3'] = pd.cut(df.b_mos_f2_mult10, bins)
+df['binned4'] = pd.cut(df.a_mos_adapt_mult10, bins)
+df['binned5'] = pd.cut(df.b_mos_adapt_mult10, bins)
 
-f1['binned0'] = pd.cut(f1.a_mos_f1_mult10, bins)
-f1['binned1'] = pd.cut(f1.a_mos_f2_mult10, bins)
-f1['binned2'] = pd.cut(f1.b_mos_f1_mult10, bins)
-f1['binned3'] = pd.cut(f1.b_mos_f2_mult10, bins)
-f1['binned4'] = pd.cut(f1.a_mos_adapt_mult10, bins)
-f1['binned5'] = pd.cut(f1.b_mos_adapt_mult10, bins)
+fig1 = plt.figure(1)
+bar_graph_results = df['binned0'].value_counts()
+bar_graph_results.plot.barh()
+fig1.show()
 
-# print(f1['binned0'], f1['binned1'],f1['binned2'],f1['binned3'],f1['binned4'],f1['binned5'])
-print(f1)
+fig2 = plt.figure(2)
+bar_graph_results = df['binned1'].value_counts()
+bar_graph_results.plot.barh()
+fig2.show()
 
-# plt.plot(f1['a_mos_f1_mult10'],df['a_mos_f1_mult10'])
+fig3 = plt.figure(3)
+bar_graph_results = df['binned2'].value_counts()
+bar_graph_results.plot.barh()
+fig3.show()
+
+fig4 = plt.figure(4)
+bar_graph_results = df['binned3'].value_counts()
+bar_graph_results.plot.barh()
+fig4.show()
+
+fig5 = plt.figure(5)
+bar_graph_results = df['binned4'].value_counts()
+bar_graph_results.plot.barh()
+fig5.show()
+
+fig6 = plt.figure(6)
+bar_graph_results = df['binned5'].value_counts()
+bar_graph_results.plot.barh()
+fig6.show()
+
+# pesq models -> rfc's based on them -> what assumption they make 
+# cross compare the MOS's 
+
 plt.show()
+# plt.plot(f1['a_mos_f1_mult10'],df['a_mos_f1_mult10'])
