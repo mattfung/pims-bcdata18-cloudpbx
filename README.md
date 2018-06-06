@@ -4,7 +4,7 @@ June 4-8 2018
 
 ## About
 
-[PIMS BCDATA Workshop 2018](https://github.com/bcdataca/workshop-content18)
+[PIMS BC Data Science Workshop 2018](https://github.com/bcdataca/workshop-content18)
 
 [Problem Description](http://workshop.bcdata.ca/2018/project/project-5/)
 
@@ -16,7 +16,7 @@ June 4-8 2018
 [Mohamed Laradji](https://github.com/mlaradji), 
 [Idalia Machuca](https://github.com/imachuca24), 
 [Julian Mentasti](https://github.com/Julian-Mentasti), 
-Conor Morrison, 
+[Conor Morrison](https://github.com/clm222), 
 [Jackie Xu](https://github.com/jackiexu007),
 [Matthew Fung](https://github.com/mattfung)
 
