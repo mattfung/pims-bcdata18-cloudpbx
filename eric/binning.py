@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+       Created on Tue Jun  5 09:21:13 2018
+       @author: Conor Morrison
+       @Edited by : Eric lam
+"""
+
 import numpy as np
 import pandas as pd
 import os
@@ -5,13 +12,16 @@ import os
 import matplotlib.pyplot as plt
 # import geoip2.database
 
-DATA_ROOT = '../data'
-CSV_FILE_NAME = 'locn-filtered' + '.csv'
-CSV_FILE_PATH = os.path.join(DATA_ROOT,'/home/eric/Documents/ubc_workshop/pims-bcdata18-cloudpbx/data/' +
-		CSV_FILE_NAME)
-GEOLITE_DB_PATH = os.path.join(DATA_ROOT,'GeoLite2-City.mmdb')
 
-DESCRIBED_COLUMNS = ["calldate", "callend", "duration", "connect_duration", "progress_time", 
+DATA_ROOT = '../data'
+# CSV_FILE_NAME = 'pims_cloudpbx_subset_201806051550_1million' + '.csv'
+CSV_FILE_NAME = '127.0.0.1-2018-05-2018-3-58 PM- voipmonitor-cdr' +'.csv'
+CSV_PATH = '/home/eric/Documents/ubc_workshop/pims-bcdata18-cloudpbx/data/'
+# CSV_PATH = '/home/eric/Documents/'
+CSV_FILE_PATH = os.path.join(CSV_PATH + CSV_FILE_NAME)
+# GEOLITE_DB_PATH = os.path.join(DATA_ROOT,'GeoLite2-City.mmdb')
+
+DESCRIBED_COLUMNS = ["ID","calldate", "callend", "duration", "connect_duration", "progress_time", 
                      "first_rtp_time", "caller", "caller_domain", "caller_reverse", "callername", 
                      "callername_reverse", "called", "called_domain", "called_reverse", "sipcallerip", 
                      "sipcallerport", "sipcalledip", "sipcalledport", "whohanged", "lastSIPresponse_id", 
@@ -48,13 +58,6 @@ df['duration_td'] = df.callend - df.calldate
 # there are more than 60% NA values in those rows.
 df_dens = df.dropna(axis=0, thresh = 79)
 
-# frames = [f1,f2,f3,f4,f5,f6]
-# results = pd.concat(frames)
-
-# print(df['connect_duration'])
-
-
-bins = [0, 30, 35, 40, 45]
 # df.dropna(subset=['a_saddr', 'b_saddr'])
 df = df[ df.connect_duration > 0 ]
 df = df[ df.a_saddr > 0 ] 
@@ -65,52 +68,41 @@ time of the call. Having != 0 just dirties out data because it adds
 the hacker data
 '''
 
-df['a_mos_adapt_mult10'].fillna(0)
-df['b_mos_adapt_mult10'].fillna(0)
-df['a_mos_f1_mult10'].fillna(0)
-df['a_mos_f2_mult10'].fillna(0)
-df['b_mos_f1_mult10'].fillna(0)
-df['b_mos_f2_mult10'].fillna(0)
+mindurcalls=df
+mindurcalls['connect_duration'].fillna(value=0, inplace=True)
 
-df['binned0'] = pd.cut(df.a_mos_f1_mult10, bins)
-df['binned1'] = pd.cut(df.a_mos_f2_mult10, bins)
-df['binned2'] = pd.cut(df.b_mos_f1_mult10, bins)
-df['binned3'] = pd.cut(df.b_mos_f2_mult10, bins)
-df['binned4'] = pd.cut(df.a_mos_adapt_mult10, bins)
-df['binned5'] = pd.cut(df.b_mos_adapt_mult10, bins)
+mindurcalls = mindurcalls[~pd.isnull(mindurcalls['connect_duration'])]
+
+bins_hist = [-1, 0, 30, 35, 40, 45]
+
 
 fig1 = plt.figure(1)
-bar_graph_results = df['binned0'].value_counts()
-bar_graph_results.plot.barh()
+
+mos_a1 = mindurcalls['a_mos_f1_mult10'].fillna(0)
+mos_a2 = mindurcalls['a_mos_f2_mult10'].fillna(0)
+mos_adapt_a = mindurcalls['a_mos_adapt_mult10'].fillna(0)
+
+hist_data = [mos_a1, mos_a2, mos_adapt_a]
+hist_labels = ['a_mos_f1_mult10','a_mos_f2_mult10','a_mos_adapt_mult10']
+plt.hist(hist_data, bins_hist, alpha=1, label= hist_labels)
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.axis([0, 45, 0, 6000])
 fig1.show()
 
+##########################################################################################
 fig2 = plt.figure(2)
-bar_graph_results = df['binned1'].value_counts()
-bar_graph_results.plot.barh()
+
+mos_b1 = mindurcalls['b_mos_f1_mult10'].fillna(0)
+mos_b2 = mindurcalls['b_mos_f2_mult10'].fillna(0)
+mos_adapt_b = mindurcalls['b_mos_adapt_mult10'].fillna(0)
+
+hist_data = [mos_b1, mos_b2, mos_adapt_b]
+hist_labels = ['b_mos_f1_mult10','b_mos_f2_mult10','b_mos_adapt_mult10']
+plt.hist(hist_data, bins_hist, alpha=1, label= hist_labels)
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.axis([0, 45, 0, 10000])
 fig2.show()
 
-fig3 = plt.figure(3)
-bar_graph_results = df['binned2'].value_counts()
-bar_graph_results.plot.barh()
-fig3.show()
-
-fig4 = plt.figure(4)
-bar_graph_results = df['binned3'].value_counts()
-bar_graph_results.plot.barh()
-fig4.show()
-
-fig5 = plt.figure(5)
-bar_graph_results = df['binned4'].value_counts()
-bar_graph_results.plot.barh()
-fig5.show()
-
-fig6 = plt.figure(6)
-bar_graph_results = df['binned5'].value_counts()
-bar_graph_results.plot.barh()
-fig6.show()
-
-# pesq models -> rfc's based on them -> what assumption they make 
-# cross compare the MOS's 
-
 plt.show()
-# plt.plot(f1['a_mos_f1_mult10'],df['a_mos_f1_mult10'])
