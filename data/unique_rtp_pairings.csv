@@ -1,4 +1,4 @@
-,,a_saddr,b_saddr,a_saddr_asn,a_saddr_asorg,a_saddr_as_ip,a_saddr_lat,a_saddr_long,b_saddr_asn,b_saddr_asorg,b_saddr_as_ip,b_saddr_lat,b_saddr_long
+id,date,a_saddr,b_saddr,a_saddr_asn,a_saddr_asorg,a_saddr_as_ip,a_saddr_lat,a_saddr_long,b_saddr_asn,b_saddr_asorg,b_saddr_as_ip,b_saddr_lat,b_saddr_long
 71483861,2018-03-15,3227975250,41732323,395152,CloudPBX,192.102.254.82,43.6319,-79.3716,5607,Sky UK Limited,2.124.200.227,53.2738,-2.6087
 70783533,2018-03-09,3227975251,41733976,395152,CloudPBX,192.102.254.83,43.6319,-79.3716,5607,Sky UK Limited,2.124.207.88,53.2738,-2.6087
 76384583,2018-05-03,1654599250,69076145,395766,CloudPBX,98.159.46.82,40.7432,-75.2242,3356,"Level 3 Parent, LLC",4.30.4.177,32.8072,-117.1649
@@ -763,7 +763,7 @@
 66137276,2018-01-23,3227975251,418079237,395152,CloudPBX,192.102.254.83,43.6319,-79.3716,812,Rogers Communications Canada Inc.,24.235.98.5,43.6319,-79.3716
 72113609,2018-03-21,3227975507,418652415,393755,CloudPBX,192.102.255.83,43.6319,-79.3716,6327,Shaw Communications Inc.,24.244.32.255,49.2788,-123.1139
 70056852,2018-03-05,3227975507,418784162,393755,CloudPBX,192.102.255.83,43.6319,-79.3716,5645,"TekSavvy Solutions, Inc.",24.246.35.162,43.794200000000004,-79.7021
-68709074,2018-02-20,3227975507,429063979,393755,CloudPBX,192.102.255.83,43.6319,-79.3716,The address 25.146.255.43 is not in the database.,The address 25.146.255.43 is not in the database.,The address 25.146.255.43 is not in the database.,The address The address 25.146.255.43 is not in the database. is not in the database.,The address The address 25.146.255.43 is not in the database. is not in the database.
+68709074,2018-02-20,3227975507,429063979,393755,CloudPBX,192.102.255.83,43.6319,-79.3716,The address 25.146.255.43 is not in the database.,The address 25.146.255.43 is not in the database.,The address 25.146.255.43 is not in the database.,0.0,0.0
 65292227,2018-01-11,3227975506,583269890,393755,CloudPBX,192.102.255.82,43.6319,-79.3716,14618,"Amazon.com, Inc.",34.195.254.2,39.0481,-77.4728
 70542993,2018-03-08,1654599250,583269891,395766,CloudPBX,98.159.46.82,40.7432,-75.2242,14618,"Amazon.com, Inc.",34.195.254.3,39.0481,-77.4728
 70841320,2018-03-11,3227975507,583269891,393755,CloudPBX,192.102.255.83,43.6319,-79.3716,14618,"Amazon.com, Inc.",34.195.254.3,39.0481,-77.4728
