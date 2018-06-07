@@ -9,8 +9,9 @@ plt.clf()
 
 DATA_ROOT = '../data'
 CSV_FILE_NAME = 'locn-filtered' + '.csv'
-CSV_FILE_PATH = os.path.join(DATA_ROOT,'/home/eric/Documents/ubc_workshop/pims-bcdata18-cloudpbx/data/' +
-		CSV_FILE_NAME)
+CSV_PATH = '/home/eric/Documents/ubc_workshop/pims-bcdata18-cloudpbx/data/'
+CSV_FILE_PATH = os.path.join(DATA_ROOT, CSV_PATH + CSV_FILE_NAME)
+GEOLITE_DB_PATH = os.path.join(DATA_ROOT,'GeoLite2-City.mmdb')
 
 DESCRIBED_COLUMNS = ["calldate", "callend", "duration", "connect_duration", "progress_time", 
                      "first_rtp_time", "caller", "caller_domain", "caller_reverse", "callername", 
@@ -30,7 +31,7 @@ DESCRIBED_COLUMNS = ["calldate", "callend", "duration", "connect_duration", "pro
                      "b_packet_loss_perc_mult1000", "delay_sum", "a_delay_sum", "b_delay_sum", 
                      "a_rtp_ptime", "b_rtp_ptime"]
 
-df = pd.read_csv(CSV_FILE_PATH, parse_dates=['calldate', 'callend'])
+df = pd.read_csv(CSV_FILE_PATH, parse_dates=['calldate', 'callend'],sep='\t')
 df = df[DESCRIBED_COLUMNS]
 df.dropna(axis=1, how='all', inplace=True)
 df = df.loc[:, ~(df == 'sanitized').all(axis=0)]
@@ -40,12 +41,7 @@ df_dens = df.dropna(axis=0, thresh = 79)
 df = df[ df.connect_duration > 0 ]
 df = df[ df.a_saddr > 0 ] 
 df = df[ df.b_saddr > 0 ]
-# df['a_mos_adapt_mult10'].fillna(0)
-# df['b_mos_adapt_mult10'].fillna(0)
-# df['a_mos_f1_mult10'].fillna(0)
-# df['a_mos_f2_mult10'].fillna(0)
-# df['b_mos_f1_mult10'].fillna(0)
-# df['b_mos_f2_mult10'].fillna(0)
+
 '''
        We do > 0 because of the possibility of hackers just hanging up at 0:00:00 
        time of the call. Having != 0 just dirties out data because it adds
@@ -57,7 +53,6 @@ df = df[ df.b_saddr > 0 ]
        # flatten packetloss into 1 number (Predictan)
        # decide on predictors ( delay_sum, jitter, mos)
        # mos -> could get a better predictor later from better results
-
 '''
 
 #### procure data -> Delay_Sum, Jitter, MOS
@@ -72,7 +67,6 @@ sum_pkt_loss_b =  df['b_sl1'] + df['b_sl2'] + df['b_sl3'] +\
 avg_pkt_loss= (sum_pkt_loss_a + sum_pkt_loss_b)/2
 # avg_pkt_loss = optional b/c 0's can be in either row for the same thing
 
-
 xi = df[['delay_sum','a_maxjitter','b_maxjitter','a_mos_adapt_mult10',\
        'b_mos_adapt_mult10', 'a_mos_f1_mult10', \
        'a_mos_f2_mult10', 'b_mos_f1_mult10', 'b_mos_f2_mult10']].values
@@ -80,26 +74,9 @@ x = np.zeros((xi.shape[0], xi.shape[1]+1))
 x[:,:-1] = xi
 x[:,-1] = np.ones(xi.shape[0])
 
-# row = df.iloc[0]
-# print (row)
-# print(sum_pkt_loss_a)
-# print(sum_pkt_loss_b)
-# print(avg_pkt_loss)
 y = sum_pkt_loss_a.values
-#print(x.shape)
-#print(y.shape)
 m= np.linalg.lstsq(x,y)
-# print(m[2])
-# print(m[0])
-#yfit = np.zeros_like(y)
-#yfit = m[0] * np.transpose(x) #+ m[1]
 yfit = x.dot(m[0])
-#for i, slope in enumerate(m[0]):
-#       yfit = yfit +(slope * x[:,i] + m[2])
-       #print('M:{} b:{}'.format(tup[0], tup[1]))
-
-#yfit = yfit + m[1]
-
 print (yfit.shape, y.shape, m[0].shape, x.shape)
 i = range(len(y))
 print(m[0])
@@ -107,9 +84,3 @@ plt.plot(i,y,'ro')
 plt.plot(i,yfit,':')
 plt.show()
 
-# slope, intercept, r_value, p_value, std_err = stats.linregress(x,sum_pkt_loss_a)
-# print(slope)
-# print(intercept)
-# print(r_value)
-# print(p_value)
-# print(std_err)
