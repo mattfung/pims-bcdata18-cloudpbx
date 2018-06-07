@@ -73,7 +73,8 @@ mindurcalls['connect_duration'].fillna(value=0, inplace=True)
 
 mindurcalls = mindurcalls[~pd.isnull(mindurcalls['connect_duration'])]
 
-bins_hist = [-1, 0, 30, 35, 40, 45]
+binwidth = 5
+bins_hist = range(0, 45 + binwidth, binwidth)
 
 
 fig1 = plt.figure(1)
@@ -87,7 +88,9 @@ hist_labels = ['a_mos_f1_mult10','a_mos_f2_mult10','a_mos_adapt_mult10']
 plt.hist(hist_data, bins_hist, alpha=1, label= hist_labels)
 plt.legend(loc='upper left')
 plt.grid(True)
-plt.axis([0, 45, 0, 6000])
+plt.axis([0, 45, 0, 6000],'scaled')
+plt.xlabel('MOS Scores')
+plt.ylabel('Frequency')
 fig1.show()
 
 ##########################################################################################
@@ -103,6 +106,8 @@ plt.hist(hist_data, bins_hist, alpha=1, label= hist_labels)
 plt.legend(loc='upper left')
 plt.grid(True)
 plt.axis([0, 45, 0, 10000])
+plt.xlabel('MOS Scores')
+plt.ylabel('Frequency')
 fig2.show()
 
 plt.show()
