@@ -1,9 +1,17 @@
+"""
+       Created on Jun 7 2018
+       @author: Eric Lam
+       @Collaborated histogram w/ Conor Morrison
+"""
+
 import numpy as np
 from scipy import stats
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import julians_algorithm
+from sklearn.metrics import *
+
 # import geoip2.database
 #
 plt.clf()
@@ -81,9 +89,9 @@ x_b[:,-1] = np.ones(xi_b.shape[0])
 
 fig1 = plt.figure(1)
 y = sum_pkt_loss_a.values
-m= np.linalg.lstsq(x_a,y)
+m = np.linalg.lstsq(x_a,y)
 yfit = x_a.dot(m[0])
-print (yfit.shape, y.shape, m[0].shape, x_a.shape)
+# print (yfit.shape, y.shape, m[0].shape, x_a.shape)
 i = range(len(y))
 print(m[0])
 plt.plot(i,y,'ro')
@@ -92,6 +100,10 @@ plt.title('Multi-Linear Regression w/ Packet Loss & MOS Version (A)')
 plt.xlabel('Data Points Numbers')
 plt.ylabel('Regression')
 fig1.show()
+# print('x_a ',x_a,'\n y \n', y)
+reg_score = np.corrcoef(y, yfit)[0, 1]**2
+print('Regression Score of Packet Loss & Mos Version A', reg_score)
+
 # plt.show()
 
 ####### Multi-Linear Regression W/ Packet Loss (B) & MOS
@@ -99,7 +111,7 @@ fig2 = plt.figure(2)
 y0 = sum_pkt_loss_b.values
 m0 = np.linalg.lstsq(x_b,y0)
 yfit0 = x_b.dot(m0[0])
-print (yfit0.shape, y0.shape, m0[0].shape, x_b.shape)
+# print (yfit0.shape, y0.shape, m0[0].shape, x_b.shape)
 i0 = range(len(y0))
 print(m0[0])
 plt.plot(i, y0, 'ro')
@@ -108,5 +120,54 @@ plt.title('Multi-Linear Regression w/ Packet Loss & MOS Version (B)')
 plt.xlabel('Data Points Numbers')
 plt.ylabel('Regression')
 fig2.show()
+reg_score0 = np.corrcoef(y0, yfit0)[0, 1]**2
+print('Regression Score of Packet Loss & Mos Version B', reg_score0)
 # plt.show()
+
+#######################################################################
+
+mindurcalls=df
+mindurcalls['connect_duration'].fillna(value=0, inplace=True)
+mindurcalls = mindurcalls[~pd.isnull(mindurcalls['connect_duration'])]
+binwidth = 5
+bins_hist = range(0, 45 + binwidth, binwidth)
+
+###### Histogram part A
+fig3 = plt.figure(3)
+
+mos_a1 = mindurcalls['a_mos_f1_mult10'].fillna(0)
+mos_a2 = mindurcalls['a_mos_f2_mult10'].fillna(0)
+mos_adapt_a = mindurcalls['a_mos_adapt_mult10'].fillna(0)
+
+hist_dataA = [mos_a1, mos_a2, mos_adapt_a]
+hist_labels = ['a_mos_f1_mult10','a_mos_f2_mult10','a_mos_adapt_mult10']
+plt.hist(hist_dataA, bins = bins_hist , alpha=1, label= hist_labels)
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.axis([0, 45, 0, 6000],'scaled')
+plt.xlabel('MOS Scores')
+plt.ylabel('Frequency')
+plt.title('Histogram w/ MOS (A)')
+fig3.show()
+
+
+###### Histogram part B
+fig4 = plt.figure(4)
+
+mos_b1 = mindurcalls['b_mos_f1_mult10'].fillna(0)
+mos_b2 = mindurcalls['b_mos_f2_mult10'].fillna(0)
+mos_adapt_b = mindurcalls['b_mos_adapt_mult10'].fillna(0)
+
+hist_dataB = [mos_b1, mos_b2, mos_adapt_b]
+hist_labels = ['b_mos_f1_mult10','b_mos_f2_mult10','b_mos_adapt_mult10']
+plt.hist(hist_dataB, bins_hist, alpha=1, label= hist_labels)
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.axis([0, 45, 0, 6000],'scaled')
+plt.xlabel('MOS Scores')
+plt.ylabel('Frequency')
+plt.title('Histogram w/ MOS (B)')
+fig4.show()
+
+plt.show()
 
